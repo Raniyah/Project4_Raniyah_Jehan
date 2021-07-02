@@ -1,0 +1,68 @@
+package P4;
+
+//A Dynamic Programming based Java
+//Program for the Egg Dropping Puzzle
+public class EggFloorProblem {
+	static int[] numOfFloors = { 1700, 1800, 1900, 2000 };
+	static int[] numOfEggs = { 100, 200, 300 };
+	static EggFloorProblem drop = new EggFloorProblem();
+
+	/*
+	 * Function to get minimum number of trials needed in worst case with n eggs and
+	 * k floors
+	 */
+	static int MinEggDropAttempts(int e, int f) {
+		/*
+		 * create a 2D matrix eggFloor[e+1][f+1] which will represent minimum number of
+		 * drop attempts needed for each egg and and in each floor.
+		 */
+		int eggFloor[][] = new int[e + 1][f + 1];
+		int NumberofTries;
+
+		// when we have one floor, We need only one trial
+		// and 0 trials needed for 0 floor
+		// i here represent eggs, means this loop will fill the 0 and 1 floors for all
+		// eggs
+		for (int i = 1; i <= e; i++) {
+			eggFloor[i][1] = 1;
+			eggFloor[i][0] = 0;
+		} // column 0 and 1 will be filled
+
+		// in case we have one egg then j trials will be needed, where j is floor number
+		for (int j = 1; j <= f; j++) {
+			eggFloor[1][j] = j;
+		}
+
+		// Fill rest of the entries by using Dynamic Programming
+		for (int i = 2; i <= e; i++) {
+			for (int j = 2; j <= f; j++) {
+				eggFloor[i][j] = Integer.MAX_VALUE;
+				for (int x = 1; x <= j; x++) {
+					NumberofTries = 1 + Math.max(eggFloor[i - 1][x - 1], eggFloor[i][j - x]);
+					eggFloor[i][j] = Math.min(NumberofTries, eggFloor[i][j]);
+
+				}
+			}
+		}
+
+		// eggFloor[e][f] holds the minimum number of trials
+		return eggFloor[e][f];
+	}
+
+	public static void main(String args[]) {
+
+		for (int e = 0; e < numOfEggs.length; e++) {
+			for (int f = 0; f < numOfFloors.length; f++) {
+				long startTime = System.nanoTime();
+				long stopTime = System.nanoTime();
+				int MinNumTrials = MinEggDropAttempts(numOfEggs[e], numOfFloors[f]);
+				System.out.println(" Number of eggs= " + numOfEggs[e] + " number of floors= " + numOfFloors[f]
+						+ ": Minimum number of trials= " + MinNumTrials);
+				long executionTime = stopTime - startTime;
+				System.out.print("Execution time= ");
+				System.out.println(executionTime);
+			}
+		}
+
+	}
+}
