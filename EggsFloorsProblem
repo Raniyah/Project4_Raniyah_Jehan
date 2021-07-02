@@ -1,7 +1,10 @@
 package P4;
 
-//A Dynamic Programming based Java
-//Program for the Egg Dropping Puzzle
+// Project 4
+// Raniyah Almalki and Jehan Alamri
+
+//Egg Dropping Puzzle by using Dynamic Programming 
+
 public class EggFloorProblem {
 	static int[] numOfFloors = { 1700, 1800, 1900, 2000 };
 	static int[] numOfEggs = { 100, 200, 300 };
