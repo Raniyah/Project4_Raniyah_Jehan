@@ -1,0 +1,80 @@
+package P4;
+//Project 4
+
+//Raniyah Almalki and Jehan Alamri
+
+//Egg Dropping Puzzle by using Dynamic Programming and binary search to enhance time complexity 
+//Time complexity is O(e*f*logf) 
+public class EggDropping_DP_Binary {
+	static int[] numOfFloors = { 1700, 1800, 1900, 2000 };
+	static int[] numOfEggs = { 100, 200, 300 };
+	static EggDropping_DP_Binary drop = new EggDropping_DP_Binary();
+
+	/*
+	 * Function to get minimum number of trials needed in worst case with n eggs and
+	 * k floors
+	 */
+	public int MinEggDropAttempts(int e, int f) {
+		int[][] memo = new int[e + 1][f + 1];
+		return EggDroop_dp(e, f, memo);
+	}
+
+	public int EggDroop_dp(int e, int f, int[][] memo) {
+		// Base cases:
+		//// if there is 0 floor , then return 0.
+		if (f == 0)
+			return 0;
+		// if there is only one floor and one egg, then return 1.
+		if (f == 1 & e == 1)
+			return 1;
+		// 2- if there is only one egg, then the worse case is to test each floor from 1
+		// to f. So just return f
+		if (e == 1)
+			return f;
+
+		int min = Integer.MAX_VALUE;
+		if (memo[e][f] != 0) {
+			return memo[e][f];
+		}
+		int low = 1, high = f;
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			// if egg in mid floor is broken, it means that we lost one egg.
+			// and this floor is critical, so check floors below mid floor
+			int Egg_broken = EggDroop_dp(e - 1, mid - 1, memo);
+			// if egg in mid floor is not broken
+			// means that this floor is not critical, so check floors above this mid floor
+			int Egg_not_broken = EggDroop_dp(e, f - mid, memo);
+			// take max(Egg_broken, Egg_not_broken) and update low and high points
+			if (Egg_broken > Egg_not_broken) {
+				high = mid - 1;
+				min = Math.min(min, Egg_broken + 1);
+			} else {
+				low = mid + 1;
+				min = Math.min(min, Egg_not_broken + 1);
+			}
+		}
+		memo[e][f] = min;
+		return min;
+	}
+
+	public static void main(String args[]) {
+		// int m = drop.MinEggDropAttempts(3, 10);
+		// System.out.println(" Number of eggs= " + 3 + " number of floors= " + 10 + ":
+		// Minimum number of trials= " + m);
+		for (int e = 0; e < numOfEggs.length; e++) {
+			for (int f = 0; f < numOfFloors.length; f++) {
+				long startTime = System.nanoTime();
+				int MinNumTrials = drop.MinEggDropAttempts(numOfEggs[e], numOfFloors[f]);
+				long stopTime = System.nanoTime();
+				System.out.println(" Number of eggs= " + numOfEggs[e] + " number of floors= " + numOfFloors[f]
+						+ ": Minimum number of trials= " + MinNumTrials);
+				long executionTime = stopTime - startTime;
+				System.out.print("Execution time= ");
+				System.out.println(executionTime);
+
+			}
+		}
+
+	}
+}
